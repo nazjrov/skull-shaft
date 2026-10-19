@@ -1,0 +1,43 @@
+# Publishes the game to GitHub Pages (the address Telegram opens).
+# Runs ONLY on command: the "Run workflow" button (Actions tab) or pushing a tag like v1, v2...
+# Plain pushes of changes do not reach players.
+name: Опубликовать игру
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Сборка и проверка ботом (уровень должен проходиться)
+        run: |
+          npm i --no-save playwright
+          npx playwright install --with-deps chromium
+          npm test
+      - name: Готовим сайт
+        run: node tools/site.mjs "${{ github.ref_type == 'tag' && github.ref_name || github.run_number }}-${{ github.sha }}"
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
