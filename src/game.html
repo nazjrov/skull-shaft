@@ -41,6 +41,7 @@ body{background:var(--void);color:var(--bone);font-family:var(--f-body);overflow
 .col{width:100%;max-width:430px;display:flex;flex-direction:column;gap:16px;margin-top:auto;}
 h1{font-family:var(--f-display);font-weight:900;font-size:clamp(46px,14vw,70px);line-height:.86;letter-spacing:-.05em;margin:0;text-transform:uppercase;}
 .ver{margin:-6px 0 0;font:800 11px/1 var(--f-body);letter-spacing:.3em;color:var(--muted);}
+.news{margin:0 0 -6px;font:800 11px/1.5 var(--f-body);letter-spacing:.14em;color:var(--bone);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .by{margin:4px 0 0;text-align:center;font:700 11px/1 var(--f-body);letter-spacing:.2em;color:var(--muted);opacity:.7;}
 h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(255,45,85,.45));}
 /* level select: one card at a time, arrows or a swipe */
@@ -108,6 +109,7 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
 
   <section id="menu" class="panel">
     <div class="col">
+      <p class="news" id="news" hidden></p>
       <h1><span>КЛАЦ!</span></h1>
       <p class="ver">1.0 beta</p>
       <button id="toLevels" class="btn" type="button">Играть</button>
@@ -1354,6 +1356,11 @@ function renderBoards(){
 // reading: anyone with the public key; writing: only through the submit-score function, which checks Telegram's signature
 const SB_URL = "https://hlyyzgrkeuqeexlougmd.supabase.co", SB_KEY = "sb_publishable_nlKdmRdrP6eFCqC9qBk-9g_W-b_Phj0";
 let sbMode = false;
+// the owner's line above the title: table "announce", row id 1, edited in the Supabase Table Editor; empty = hidden
+fetch(SB_URL + "/rest/v1/announce?select=text&id=eq.1", {headers: {apikey: SB_KEY}, cache: "no-store"})
+  .then(r => r.ok ? r.json() : [])
+  .then(a => { const t = String((a[0] && a[0].text) || "").trim(); $("news").textContent = t; $("news").hidden = !t; })
+  .catch(() => {});
 async function sbLoad(){
   try {
     const q = "select=tg_id,name,photo,best,att,clear_att&ver=eq." + encodeURIComponent(LEVEL) + "&best=gt.0&order=best.desc,clear_att.asc,at.asc&limit=100";
