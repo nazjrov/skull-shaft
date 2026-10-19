@@ -1,6 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
-<title>Skull Shaft</title>
+<title>КЛАЦ!</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Manrope:wght@500;700;800&display=swap">
@@ -43,6 +43,8 @@ body{background:var(--void);color:var(--bone);font-family:var(--f-body);overflow
   padding-block:calc(max(env(safe-area-inset-top,0px),var(--sat,0px)) + 28px) calc(max(env(safe-area-inset-bottom,0px),var(--sab,0px)) + 24px);}
 .col{width:100%;max-width:430px;display:flex;flex-direction:column;gap:16px;margin-top:auto;}
 h1{font-family:var(--f-display);font-weight:900;font-size:clamp(46px,14vw,70px);line-height:.86;letter-spacing:-.05em;margin:0;text-transform:uppercase;}
+.ver{margin:-6px 0 0;font:800 11px/1 var(--f-body);letter-spacing:.3em;color:var(--muted);}
+.by{margin:4px 0 0;text-align:center;font:700 11px/1 var(--f-body);letter-spacing:.2em;color:var(--muted);opacity:.7;}
 h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(255,45,85,.45));}
 .lvl{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;background:var(--glass);border:1px solid var(--edge);backdrop-filter:blur(12px);}
 .lvl .no{font-family:var(--f-display);font-weight:900;font-size:26px;color:var(--teal);text-shadow:0 0 16px rgba(63,245,210,.5);}
@@ -50,11 +52,6 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
 .lvl .meta b{font-family:var(--f-display);font-weight:700;font-size:14px;}
 .lvl .meta span{font-size:12px;color:var(--muted);}
 .lvl .pb{margin-left:auto;font-weight:800;font-size:12px;letter-spacing:.08em;color:var(--gold);white-space:nowrap;}
-.how{display:grid;gap:8px;margin:0;padding:0;list-style:none;font-size:13px;line-height:1.45;color:#cfc6d8;}
-.how li{display:grid;grid-template-columns:84px 1fr;gap:12px;align-items:baseline;}
-.how b{font-family:var(--f-display);font-weight:700;font-size:10px;letter-spacing:.12em;padding:6px 0;text-align:center;border-radius:8px;}
-.how .w b{background:rgba(63,245,210,.12);color:var(--teal);}
-.how .s b{background:rgba(255,45,85,.14);color:#ff7d95;}
 .btn{font-family:var(--f-display);font-weight:900;font-size:18px;letter-spacing:.04em;text-transform:uppercase;color:#14020a;background:linear-gradient(180deg,#ff5a78,var(--blood));border:0;border-radius:16px;padding:19px 20px;cursor:pointer;box-shadow:0 0 0 1px rgba(255,255,255,.15) inset,0 14px 40px -10px rgba(255,45,85,.8);transition:transform .08s;}
 .btn:active{transform:scale(.97);}
 .btn:disabled{background:#2a2033;color:var(--muted);box-shadow:none;cursor:wait;}
@@ -62,7 +59,7 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
 .row{display:flex;gap:10px;}
 .row .btn{flex:1;}
 .hint{margin:-6px 0 0;text-align:center;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.14em;}
-@media (pointer:coarse){.hint.kbd{display:none;}}
+.hint.kbd{display:none;}
 
 .board{background:var(--glass);border:1px solid var(--edge);border-radius:18px;padding:14px 14px 10px;backdrop-filter:blur(12px);}
 .board h2{margin:0 0 10px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;}
@@ -134,25 +131,22 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
 
   <section id="menu" class="panel">
     <div class="col">
-      <h1>Skull<span>Shaft</span></h1>
+      <h1><span>КЛАЦ!</span></h1>
+      <p class="ver">1.0 beta</p>
       <div class="lvl">
         <span class="no">01</span>
         <span class="meta"><b>Первый уровень</b><span>103 BPM · 0:28 · дроп</span></span>
         <span class="pb" id="pbMenu"></span>
       </div>
-      <ul class="how">
-        <li class="w"><b>ВОЛНА</b><span>Держи, чтобы лететь вправо, отпусти, чтобы влево. Коридор поворачивает в удар.</span></li>
-        <li class="w"><b>ЗЕРКАЛО</b><span>После фиолетового портала управление наоборот.</span></li>
-        <li class="s"><b>СТЕНЫ</b><span>Тап, чтобы перелететь на другую стену. Прыжок работает только в удар.</span></li>
-      </ul>
       <button id="play" class="btn" type="button" disabled>Загружаю трек…</button>
       <div class="row"><button id="openTap" class="btn ghost" type="button" disabled hidden>Разметка трека</button><button id="openEd" class="btn ghost" type="button" hidden>Редактор карты</button></div>
-      <p class="hint kbd">НА КЛАВИАТУРЕ: ПРОБЕЛ</p>
+      <p class="hint kbd"></p>
       <div class="board">
         <h2>Таблица уровня <small id="me1"></small></h2>
         <ol class="lb" id="lb1"></ol>
         <p class="lbnote" id="note1"></p>
       </div>
+      <p class="by">by nazjrov</p>
     </div>
   </section>
 
