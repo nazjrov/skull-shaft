@@ -1490,6 +1490,22 @@ async function sbLoad(){
   } catch(e){ if (lbState !== "ok") lbState = "off"; }
   filterRows();
 }
+// the table is the truth: on launch the phone takes the player's record from it.
+// No row (never played, or the owner deleted it in Supabase) = record 0%. If the table can't be reached, the phone keeps its own.
+async function sbSyncMe(){
+  if (!uid) return;
+  try {
+    const r = await fetch(SB_URL + "/rest/v1/scores?select=best,att,clear_att&tg_id=eq." + encodeURIComponent(uid) + "&ver=eq." + encodeURIComponent(LEVEL), {headers: {apikey: SB_KEY}, cache: "no-store"});
+    if (!r.ok) return;
+    const v = (await r.json())[0];
+    best = v ? clamp(Math.floor(Number(v.best)) || 0, 0, 100) : 0;
+    clearAtt = v ? Math.floor(Number(v.clear_att)) || 0 : 0;
+    attempts = v ? Math.max(attempts, Math.floor(Number(v.att)) || 0) : 0;
+    served = {best, clearAtt};
+    store.set("ss_" + LEVEL + "_best", String(best)); store.set("ss_" + LEVEL + "_clear", String(clearAtt)); store.set("ss_" + LEVEL + "_att", String(attempts));
+    updateMenuPB();
+  } catch(e){}
+}
 function sbSubmit(){
   served = {best, clearAtt};
   const body = {initData: tg.initData, best, att: attempts, clearAtt: clearAtt || 0, ver: LEVEL};
@@ -1515,7 +1531,7 @@ function submitScore(){
   if (w && w.initData){
     sbMode = true;
     const u = w.initDataUnsafe && w.initDataUnsafe.user; uid = u && u.id ? String(u.id) : null;
-    setNotes(""); await sbLoad(); submitScore(); // also sends a record set on this phone before the table existed
+    setNotes(""); await sbSyncMe(); sbLoad();
     return;
   }
   const c = window.claude;
