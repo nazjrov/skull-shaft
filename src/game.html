@@ -43,12 +43,21 @@ h1{font-family:var(--f-display);font-weight:900;font-size:clamp(46px,14vw,70px);
 .ver{margin:-6px 0 0;font:800 11px/1 var(--f-body);letter-spacing:.3em;color:var(--muted);}
 .by{margin:4px 0 0;text-align:center;font:700 11px/1 var(--f-body);letter-spacing:.2em;color:var(--muted);opacity:.7;}
 h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(255,45,85,.45));}
-.lvl{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:18px;background:var(--glass);border:1px solid var(--edge);backdrop-filter:blur(12px);}
-.lvl .no{font-family:var(--f-display);font-weight:900;font-size:26px;color:var(--teal);text-shadow:0 0 16px rgba(63,245,210,.5);}
-.lvl .meta{display:flex;flex-direction:column;gap:3px;min-width:0;}
-.lvl .meta b{font-family:var(--f-display);font-weight:700;font-size:14px;}
-.lvl .meta span{font-size:12px;color:var(--muted);}
-.lvl .pb{margin-left:auto;font-weight:800;font-size:12px;letter-spacing:.08em;color:var(--gold);white-space:nowrap;}
+/* level select: one card at a time, arrows or a swipe */
+.lvSel{display:flex;align-items:center;gap:8px;}
+.arr{flex:none;width:42px;height:42px;border-radius:50%;background:var(--glass);border:1px solid var(--edge);color:var(--bone);font:900 16px/1 var(--f-display);cursor:pointer;backdrop-filter:blur(10px);}
+.arr:disabled{opacity:.25;cursor:default;}
+.cards{flex:1;min-width:0;overflow:hidden;border-radius:22px;touch-action:pan-y;}
+.track{display:flex;transition:transform .35s cubic-bezier(.2,.8,.2,1);}
+.card{flex:0 0 100%;box-sizing:border-box;padding:20px 18px 18px;border-radius:22px;background:var(--glass);border:1px solid var(--edge);display:flex;flex-direction:column;gap:6px;}
+.card .no{font-family:var(--f-display);font-weight:900;font-size:56px;line-height:.9;letter-spacing:-.05em;}
+.card .ttl{font-family:var(--f-display);font-weight:700;font-size:17px;margin-top:6px;}
+.card .pb{font-weight:800;font-size:12px;letter-spacing:.08em;color:var(--gold);min-height:15px;margin:4px 0 8px;}
+.card.soon .no,.card.soon .ttl{color:var(--muted);}
+.dots{display:flex;justify-content:center;gap:7px;margin-top:-4px;}
+.dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.18);}
+.dots i.on{background:var(--blood);}
+@media (prefers-reduced-motion: reduce){.track{transition:none;}}
 .btn{font-family:var(--f-display);font-weight:900;font-size:18px;letter-spacing:.04em;text-transform:uppercase;color:#14020a;background:linear-gradient(180deg,#ff5a78,var(--blood));border:0;border-radius:16px;padding:19px 20px;cursor:pointer;box-shadow:0 0 0 1px rgba(255,255,255,.15) inset,0 14px 40px -10px rgba(255,45,85,.8);transition:transform .08s;}
 .btn:active{transform:scale(.97);}
 .btn:disabled{background:#2a2033;color:var(--muted);box-shadow:none;cursor:wait;}
@@ -101,19 +110,29 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
     <div class="col">
       <h1><span>КЛАЦ!</span></h1>
       <p class="ver">1.0 beta</p>
-      <div class="lvl">
-        <span class="no">01</span>
-        <span class="meta"><b>Первый уровень</b><span>103 BPM · 0:28 · дроп</span></span>
-        <span class="pb" id="pbMenu"></span>
+      <button id="toLevels" class="btn" type="button">Играть</button>
+      <p class="by">by nazjrov</p>
+    </div>
+  </section>
+
+  <section id="levels" class="panel" hidden>
+    <div class="col">
+      <p class="kicker">Уровни</p>
+      <div class="lvSel">
+        <button class="arr" id="lvPrev" type="button" aria-label="Предыдущий уровень">←</button>
+        <div class="cards" id="lvCards"><div class="track" id="lvTrack">
+          <div class="card"><span class="no">01</span><span class="ttl">ЧИМИЧАНГО</span><span class="pb" id="pbMenu"></span><button id="play" class="btn" type="button" disabled>Загружаю трек…</button></div>
+          <div class="card soon"><span class="no">02</span><span class="ttl">Скоро</span><span class="pb"></span><button class="btn" type="button" disabled>Скоро</button></div>
+        </div></div>
+        <button class="arr" id="lvNext" type="button" aria-label="Следующий уровень">→</button>
       </div>
-      <button id="play" class="btn" type="button" disabled>Загружаю трек…</button>
+      <div class="dots" id="lvDots"><i></i><i></i></div>
       <p class="hint kbd"></p>
       <div class="board">
         <h2>Таблица уровня <small id="me1"></small></h2>
         <ol class="lb" id="lb1"></ol>
         <p class="lbnote" id="note1"></p>
       </div>
-      <p class="by">by nazjrov</p>
     </div>
   </section>
 
@@ -445,7 +464,7 @@ function startRun(){
   if (ac) startSong(ac.currentTime + lead);
   perfOffset = -(performance.now()/1000) - lead;
   state = "play"; holding = pointers > 0;
-  $("menu").hidden = true; $("over").hidden = true; $("hud").hidden = false;
+  $("menu").hidden = true; $("levels").hidden = true; $("over").hidden = true; $("hud").hidden = false;
   $("bestHud").textContent = best + "%"; $("attHud").textContent = attempts;
   try { navigator.wakeLock && navigator.wakeLock.request("screen").then(l => wakeLock = l).catch(() => {}); } catch(e){}
 }
@@ -519,20 +538,44 @@ cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
 let keyHeld = false;
 const ready = () => !$("play").disabled;
 addEventListener("keydown", e => {
+  if (state === "levels" && (e.code === "ArrowLeft" || e.code === "ArrowRight")){ e.preventDefault(); lvGo(lvIdx + (e.code === "ArrowRight" ? 1 : -1)); return; }
   if (e.code !== "Space" && e.code !== "ArrowUp" && e.code !== "Enter") return;
   if (e.target && e.target.tagName === "BUTTON" && e.code !== "Space") return;
   e.preventDefault();
   if (keyHeld) return; keyHeld = true;
-  if ((state === "menu" || state === "dead" || state === "result") && ready()) { startRun(); holding = true; pointers = 1; return; }
+  if (state === "menu"){ showLevels(); return; }
+  if (((state === "levels" && lvIdx === 0) || state === "dead" || state === "result") && ready()) { startRun(); holding = true; pointers = 1; return; }
+  if (state === "levels") return;
   down();
 });
 addEventListener("keyup", e => { if ((e.code === "Space" || e.code === "ArrowUp" || e.code === "Enter") && keyHeld){ keyHeld = false; up(); } });
 addEventListener("blur", () => { pointers = 0; holding = false; keyHeld = false; });
 $("play").addEventListener("click", () => startRun());
 $("retry").addEventListener("click", () => startRun());
+// ---------- screens: main menu -> level select -> run ----------
+let lvIdx = 0;
+const LV_COUNT = $("lvTrack").children.length;
+function lvGo(k){
+  lvIdx = clamp(k, 0, LV_COUNT - 1);
+  $("lvTrack").style.transform = "translateX(" + (-100 * lvIdx) + "%)";
+  $("lvPrev").disabled = lvIdx === 0; $("lvNext").disabled = lvIdx === LV_COUNT - 1;
+  [...$("lvDots").children].forEach((d, j) => d.classList.toggle("on", j === lvIdx));
+  renderBoards();
+}
+$("lvPrev").addEventListener("click", () => lvGo(lvIdx - 1));
+$("lvNext").addEventListener("click", () => lvGo(lvIdx + 1));
+let lvX0 = null;
+$("lvCards").addEventListener("pointerdown", e => { lvX0 = e.clientX; });
+$("lvCards").addEventListener("pointerup", e => { if (lvX0 !== null && Math.abs(e.clientX - lvX0) > 40) lvGo(lvIdx + (e.clientX < lvX0 ? 1 : -1)); lvX0 = null; });
+$("lvCards").addEventListener("pointercancel", () => { lvX0 = null; });
+function showLevels(){ state = "levels"; $("menu").hidden = true; $("levels").hidden = false; updateMenuPB(); lvGo(lvIdx); }
+function goHome(){ state = "menu"; $("levels").hidden = true; $("menu").hidden = false; }
+$("toLevels").addEventListener("click", showLevels);
+// after a run (and Telegram's "back" from a run) -> the level select; "back" from there -> the main menu
 function goMenu(){
   if (state === "menu") return;
-  stopSong(false); state = "menu"; resetRun(); $("over").hidden = true; $("hud").hidden = true; $("menu").hidden = false; updateMenuPB(); renderBoards();
+  if (state === "levels"){ goHome(); return; }
+  stopSong(false); state = "levels"; resetRun(); $("over").hidden = true; $("hud").hidden = true; $("levels").hidden = false; updateMenuPB(); renderBoards();
   if (sbMode) sbLoad();
   try { wakeLock && wakeLock.release(); } catch(e){} wakeLock = null;
 }
@@ -600,7 +643,7 @@ function update(dt, rt){
     } else if (rt - endAt > 2.2 && $("over").hidden){ state = "result"; $("over").hidden = false; $("hud").hidden = true; renderBoards(); }
   } else if (state === "dying"){
     if (rt - endAt > 0.85){ state = "dead"; $("over").hidden = false; $("hud").hidden = true; renderBoards(); }
-  } else if (state === "menu"){
+  } else if (state === "menu" || state === "levels"){
     beatNow = rt / SPB;
   }
   for (const q of parts){ if (q.ring){ q.life -= dt; continue; } q.x += q.vx * dt; q.y += q.vy * dt; q.vx *= 0.95; q.vy *= 0.95; q.life -= dt; if (q.rot !== undefined) q.rot += dt * 8; }
@@ -1285,9 +1328,10 @@ function paintNotes(){ const t = [noteExtra, noteMain].filter(Boolean).join(" ")
 function renderBoards(){
   for (const ol of [$("lb1"), $("lb2")]){
     ol.textContent = "";
-    if (lbState !== "ok" || !rows.length){
+    const soon = ol.id === "lb1" && lvIdx > 0; // a "coming soon" card in the level select
+    if (soon || lbState !== "ok" || !rows.length){
       const li = document.createElement("li"); li.className = "empty";
-      li.textContent = lbState === "loading" ? "Загружаю рекорды…" : lbState === "off" ? "Общая таблица недоступна в этом просмотре." : "Пока пусто. Первый рекорд будет твоим.";
+      li.textContent = soon ? "Уровень ещё не открыт." : lbState === "loading" ? "Загружаю рекорды…" : lbState === "off" ? "Общая таблица недоступна в этом просмотре." : "Пока пусто. Первый рекорд будет твоим.";
       ol.appendChild(li); continue;
     }
     rows.slice(0, 10).forEach((r, i) => {
@@ -1304,7 +1348,7 @@ function renderBoards(){
   }
   const myIdx = uid ? rows.findIndex(r => r.id === uid) : -1;
   const meTxt = myIdx >= 0 ? "ты #" + (myIdx + 1) : (best ? "твой рекорд " + best + "%" : "");
-  $("me1").textContent = meTxt; $("me2").textContent = meTxt;
+  $("me1").textContent = lvIdx > 0 ? "" : meTxt; $("me2").textContent = meTxt;
 }
 // ---------- shared records in Telegram (Supabase) ----------
 // reading: anyone with the public key; writing: only through the submit-score function, which checks Telegram's signature

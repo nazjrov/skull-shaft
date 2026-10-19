@@ -12,6 +12,7 @@ p.on("pageerror", e => console.log("ERR", e.message));
 await p.goto(pathToFileURL(path.join(root, "test-out/bot.html")).href);
 await p.waitForTimeout(2500);
 await p.evaluate(o => { window.__bot = true; window.__off = o; }, off);
+await p.click("#toLevels");
 await p.click("#play");
 let last;
 for (let i = 0; i < 70; i++){ await p.waitForTimeout(500); last = await p.evaluate(() => window.__info()); if (last.state !== "play") break; }
