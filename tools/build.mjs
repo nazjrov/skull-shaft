@@ -14,7 +14,6 @@ put("/*DATA*/", txt("src/beats.js"));
 put("/*TRACK*/", b64("assets/track.mp3"));
 put("/*SKIMG*/", b64("assets/skull-fallback.png"));
 put("/*SKULLGL*/", txt("src/skullgl.js"));
-put("/*EDITOR*/", txt("src/editor.js"));
 put("/*SKGLB*/", b64("assets/skull.glb"));
 fs.mkdirSync(path.join(root, "dist"), {recursive: true});
 fs.writeFileSync(path.join(root, "dist/index.html"), g);
@@ -36,6 +35,6 @@ if (process.argv.includes("--test")){
   s = s.replace("buildLevel();\n", () => 'buildLevel();\nwindow.__info = () => ({state, pct, beat: beatNow, doors: DOORS.length});\n');
   fs.mkdirSync(path.join(root, "test-out"), {recursive: true});
   fs.writeFileSync(path.join(root, "test-out/bot.html"), s);
-  fs.writeFileSync(path.join(root, "test-out/god.html"), s.replace("!godMode && hit(beat)", "false && hit(beat)"));
+  fs.writeFileSync(path.join(root, "test-out/god.html"), s.replace("beat > -1.5 && hit(beat)", "false"));
   console.log("test-out/bot.html + god.html ok");
 }

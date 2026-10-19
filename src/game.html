@@ -1,7 +1,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>КЛАЦ!</title>
-<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;700;900&family=Manrope:wght@500;700;800&display=swap">
 <style>
@@ -33,9 +32,7 @@ body{background:var(--void);color:var(--bone);font-family:var(--f-body);overflow
 .sc small{font-size:.45em;font-weight:700;color:var(--muted);margin-left:2px;}
 .best{font-size:11px;font-weight:700;letter-spacing:.16em;color:var(--muted);margin-top:7px;text-transform:uppercase;}
 .best b{color:var(--gold);}
-.chips{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;pointer-events:none;}
-.chip{pointer-events:auto;font:800 11px/1 var(--f-body);letter-spacing:.14em;text-transform:uppercase;color:var(--bone);background:var(--glass);border:1px solid var(--edge);border-radius:999px;padding:10px 14px;cursor:pointer;backdrop-filter:blur(10px);}
-.chip:focus-visible,.btn:focus-visible{outline:2px solid var(--teal);outline-offset:3px;}
+.btn:focus-visible{outline:2px solid var(--teal);outline-offset:3px;}
 
 .panel{position:absolute;inset:0;overflow-y:auto;display:flex;justify-content:center;
   background:linear-gradient(180deg,rgba(5,3,10,0) 0%,rgba(5,3,10,.55) 40%,rgba(5,3,10,.92) 100%);
@@ -87,34 +84,6 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
 .newbest{display:inline-block;align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:.14em;color:#03201a;background:var(--teal);padding:7px 11px;border-radius:8px;}
 .sub{margin:-4px 0 0;font-size:13px;line-height:1.5;color:var(--muted);}
 
-#tapper .zone{min-height:38vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;border-radius:22px;background:radial-gradient(circle at 50% 45%,rgba(255,45,85,.18),rgba(16,10,24,.6) 60%);border:1px dashed rgba(255,255,255,.14);}
-#tapper .count{font-family:var(--f-display);font-weight:900;font-size:64px;line-height:1;}
-#tapper .tt{font-size:12px;font-weight:700;letter-spacing:.14em;color:var(--muted);text-transform:uppercase;}
-#tapper textarea{width:100%;min-height:120px;resize:vertical;background:rgba(0,0,0,.4);color:var(--bone);border:1px solid var(--edge);border-radius:12px;padding:10px;font:600 12px/1.5 ui-monospace,Menlo,Consolas,monospace;box-sizing:border-box;}
-#tapper p{margin:0;font-size:13px;line-height:1.55;color:#cfc6d8;}
-#editor{position:absolute;inset:0;display:flex;flex-direction:column;background:#07060b;
-  padding-top:calc(max(env(safe-area-inset-top,0px),var(--sat,0px)) + 8px);padding-bottom:calc(max(env(safe-area-inset-bottom,0px),var(--sab,0px)) + 8px);
-  padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px));gap:8px;box-sizing:border-box;}
-.edTop{display:flex;align-items:center;gap:10px;}
-.edTitle{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
-.edTitle b{font-family:var(--f-display);font-size:13px;letter-spacing:.06em;text-transform:uppercase;}
-.edTitle span{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.edTitle span.dirty{color:var(--gold);}
-.edMoreBox{display:flex;flex-direction:column;gap:8px;padding:10px;border-radius:14px;background:var(--glass);border:1px solid var(--edge);}
-.edMoreBox textarea{width:100%;min-height:90px;box-sizing:border-box;background:rgba(0,0,0,.45);color:var(--bone);border:1px solid var(--edge);border-radius:10px;padding:8px;font:600 11px/1.45 ui-monospace,Menlo,Consolas,monospace;}
-.edView{position:relative;flex:1;min-height:0;border-radius:14px;overflow:hidden;border:1px solid var(--edge);touch-action:none;}
-#edCv{position:absolute;inset:0;width:100%;height:100%;display:block;cursor:pointer;}
-.edToast{position:absolute;left:50%;top:10px;transform:translateX(-50%);max-width:90%;padding:8px 12px;border-radius:10px;background:rgba(20,8,12,.92);border:1px solid rgba(255,45,85,.4);font-size:12px;font-weight:700;text-align:center;pointer-events:none;}
-.edBar{display:flex;flex-direction:column;gap:7px;}
-.edRow{display:flex;gap:6px;flex-wrap:wrap;align-items:center;}
-.edRow .chip{padding:9px 11px;font-size:10.5px;}
-.edRow .btn{flex:1;padding:14px 10px;font-size:14px;}
-.edLbl{font:800 11px/1 var(--f-body);letter-spacing:.08em;color:var(--gold);min-width:64px;}
-#edSecCtl{display:inline-flex;gap:6px;align-items:center;flex-wrap:wrap;}
-#edSecCtl small{font-size:10.5px;font-weight:800;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;}
-.chip.on{background:rgba(255,200,67,.16);border-color:rgba(255,200,67,.5);color:var(--gold);}
-.chip.danger{color:#ff8098;}
-.chip:disabled{opacity:.4;cursor:default;}
 @media (prefers-reduced-motion: reduce){.btn{transition:none;}}
 </style>
 
@@ -126,7 +95,6 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
       <div class="sc"><span id="score">0</span><small>%</small></div>
       <div class="best">рекорд <b id="bestHud">0%</b> · попытка <b id="attHud">1</b></div>
     </div>
-    <div class="chips"><button id="god" class="chip" type="button" aria-pressed="false" hidden>бессмертие выкл</button></div>
   </div>
 
   <section id="menu" class="panel">
@@ -139,7 +107,6 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
         <span class="pb" id="pbMenu"></span>
       </div>
       <button id="play" class="btn" type="button" disabled>Загружаю трек…</button>
-      <div class="row"><button id="openTap" class="btn ghost" type="button" disabled hidden>Разметка трека</button><button id="openEd" class="btn ghost" type="button" hidden>Редактор карты</button></div>
       <p class="hint kbd"></p>
       <div class="board">
         <h2>Таблица уровня <small id="me1"></small></h2>
@@ -160,70 +127,10 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
         <button id="retry" class="btn" type="button">Ещё раз</button>
         <button id="toMenu" class="btn ghost" type="button">Меню</button>
       </div>
-      <button id="toEd" class="btn ghost" type="button" hidden>Назад в редактор</button>
       <div class="board">
         <h2>Таблица уровня <small id="me2"></small></h2>
         <ol class="lb" id="lb2"></ol>
         <p class="lbnote" id="note2"></p>
-      </div>
-    </div>
-  </section>
-
-  <section id="tapper" class="panel" hidden>
-    <div class="col">
-      <p class="kicker win">Разметка трека</p>
-      <p>Включи трек и тапай по экрану (или жми пробел) там, где по ощущению должен быть прыжок или поворот. Когда трек закончится, скопируй результат и пришли мне. По нему я поставлю препятствия.</p>
-      <div class="zone" id="tapZone">
-        <div class="count" id="tapCount">0</div>
-        <div class="tt" id="tapTime">нажми «старт»</div>
-      </div>
-      <div class="row">
-        <button id="tapStart" class="btn" type="button">Старт</button>
-        <button id="tapStop" class="btn ghost" type="button">Назад</button>
-      </div>
-      <textarea id="tapOut" readonly hidden aria-label="Результат разметки"></textarea>
-      <button id="tapCopy" class="btn ghost" type="button" hidden>Скопировать</button>
-    </div>
-  </section>
-  <section id="editor" hidden>
-    <div class="edTop">
-      <button id="edBack" class="chip" type="button">← Меню</button>
-      <div class="edTitle"><b>Редактор карты</b><span id="edStatus">без изменений</span></div>
-      <button id="edMore" class="chip" type="button" aria-expanded="false">Ещё</button>
-    </div>
-    <div class="edMoreBox" id="edMoreBox" hidden>
-      <button id="edReset" class="chip" type="button">Вернуть исходную карту</button>
-      <button id="edCodeBtn" class="chip" type="button">Код карты</button>
-      <div id="edCodeBox" hidden>
-        <textarea id="edCode" aria-label="Код карты" spellcheck="false"></textarea>
-        <div class="edRow"><button id="edCopy" class="chip" type="button">Скопировать</button><button id="edImport" class="chip" type="button">Применить вставленный код</button></div>
-      </div>
-    </div>
-    <div class="edView" id="edView"><canvas id="edCv" aria-label="Карта уровня по битам"></canvas><div class="edToast" id="edToast" hidden></div></div>
-    <div class="edBar">
-      <div class="edRow" id="edSelRow" hidden>
-        <span class="edLbl" id="edSelLbl">бит</span>
-        <button id="edUp" class="chip" type="button" aria-label="Позже на шаг сетки">▲</button>
-        <button id="edDown" class="chip" type="button" aria-label="Раньше на шаг сетки">▼</button>
-        <button id="edPost" class="chip" type="button">Столб</button>
-        <button id="edSpike" class="chip" type="button">Шипы вкл</button>
-        <button id="edDel" class="chip danger" type="button">Удалить</button>
-      </div>
-      <div class="edRow">
-        <button id="edUndo" class="chip" type="button">Отменить</button>
-        <button id="edSnap" class="chip" type="button">Сетка 1/4</button>
-        <button id="edZoomOut" class="chip" type="button" aria-label="Мельче">−</button>
-        <button id="edZoomIn" class="chip" type="button" aria-label="Крупнее">+</button>
-        <span id="edSecCtl"></span>
-      </div>
-      <div class="edRow">
-        <button id="edListen" class="chip" type="button">▶ Слушать</button>
-        <button id="edAddNow" class="chip" type="button" hidden>＋ Прыжок сюда</button>
-        <button id="edGod" class="chip" type="button" aria-pressed="false">бессмертие выкл</button>
-      </div>
-      <div class="edRow">
-        <button id="edPlay" class="btn" type="button">Играть с бита</button>
-        <button id="edSave" class="btn ghost" type="button">Сохранить</button>
       </div>
     </div>
   </section>
@@ -238,8 +145,8 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
 (() => {
 "use strict";
 /*DATA*/
-const BPM = 103.19, PH = 0.565, SPB = 60 / BPM, FINISH = 48, BASE_LEVEL = "lvl1v4", LBCOL = "lvl1v4";
-let LEVEL = BASE_LEVEL;
+// LEVEL: the records' level id in the table (scores.ver)
+const BPM = 103.19, PH = 0.565, SPB = 60 / BPM, FINISH = 48, LEVEL = "lvl1v4";
 // the user's own tap map of the track (beats, snapped to quarters): every turn and every hop sits on one of these
 const TAPS0 = [1.25,3.0,5.0,7.0,8.0,9.0,10.0,11.0,12.0,13.0,15.0,16.0,17.0,18.0,18.5,19.0,19.5,20.0,20.5,21.25,22.25,22.5,23.0,23.5,24.0,24.5,25.25,26.25,26.75,27.25,27.5,28.0,28.5,29.0,30.0,30.5,31.0,31.5,32.0,32.5,32.75,33.0,33.25,34.0,35.0,36.0,37.0,38.0,39.0,40.0,41.0,42.0,43.0,44.0,45.0,46.0,47.0,48.0,49.0];
 // Song map. Drop 1 = 0:10, Drop 2 = 0:38, a stop at 0:56, drop 2 returns at 0:59.
@@ -260,7 +167,7 @@ const SECTIONS = [
   {b0:48,  m:"wave", P:235, kind:"end",    pal:"drop1"},
   {b0:9999,m:"wave", P:235, kind:"end",    pal:"drop1"}
 ];
-// ---------- the map as data (the editor changes this; buildLevel reads it) ----------
+// ---------- the map as data (buildLevel reads it) ----------
 // taps: every turn and hop · G: corridor width per wave section · entry: first wall · posts: hops that land on a centre post · noSpike: hops without punishing spikes before them
 const WAVE_SECS = [0, 1];
 function defaultMap(){
@@ -287,9 +194,7 @@ function cleanMap(m){
   const noSpike = [...new Set((m && Array.isArray(m.noSpike) ? m.noSpike : []).map(Number).map(r2))].filter(inT).sort((a, b) => a - b);
   return {taps, G, entry, posts, noSpike};
 }
-const mapKey = m => JSON.stringify([m.taps, m.G, m.entry, m.posts, m.noSpike]);
-function mapVer(m){ const k = mapKey(m); if (k === mapKey(DEFMAP)) return BASE_LEVEL; let h = 2166136261; for (let i = 0; i < k.length; i++){ h ^= k.charCodeAt(i); h = Math.imul(h, 16777619); } return "m" + (h >>> 0).toString(36); }
-let DEFMAP = null, MAP = null, TAPS = TAPS0;
+let MAP = null, TAPS = TAPS0;
 
 // ---------- constants & helpers ----------
 const W = 360, XL = 24, XR = 336, PR = 11, DASH = 0.12, VX = 0.55, FIELD = XR - XL + 60;
@@ -305,7 +210,7 @@ function hash(a, b){ let h = Math.imul(a|0, 374761393) ^ Math.imul(b|0, 66826526
 const store = { get(k){try{return localStorage.getItem(k);}catch(e){return null;}}, set(k,v){try{localStorage.setItem(k,v);}catch(e){}} };
 
 // ---------- Telegram Mini App ----------
-// inside Telegram the address carries #tgWebAppData=...; only then the SDK is loaded (claude.ai and plain browsers skip it)
+// inside Telegram the address carries #tgWebAppData=...; only then the SDK is loaded (plain browsers skip it)
 let tg = null;
 const hap = k => { try { if (!tg || !tg.HapticFeedback) return; if (k === "jump") tg.HapticFeedback.impactOccurred("light"); else tg.HapticFeedback.notificationOccurred(k); } catch(e){} };
 const tgReady = !/tgWebAppData=/.test(location.hash) ? Promise.resolve(null) : new Promise(res => {
@@ -331,7 +236,7 @@ function tgInit(w){
   if (v("6.1") && tg.BackButton){
     let shown = false;
     tryIt(() => tg.BackButton.onClick(() => goMenu()));
-    setInterval(() => { const want = state !== "menu" && state !== "edit" && state !== "tap"; if (want !== shown){ shown = want; tryIt(() => want ? tg.BackButton.show() : tg.BackButton.hide()); } }, 150);
+    setInterval(() => { const want = state !== "menu"; if (want !== shown){ shown = want; tryIt(() => want ? tg.BackButton.show() : tg.BackButton.hide()); } }, 150);
   }
 }
 const val = (A, i) => (i >= 0 && i < A.length) ? A[i] / 100 : 0;
@@ -436,11 +341,11 @@ function corrAt(b){
   }
   return null;
 }
-DEFMAP = defaultMap(); MAP = cleanMap(DEFMAP);
+MAP = cleanMap(defaultMap());
 buildLevel();
 
 // ---------- audio ----------
-let ac = null, master, noiseBuf, songBuf = null, src = null, songGain = null, startAt = 0, songOn = false, muted = false;
+let ac = null, master, noiseBuf, songBuf = null, src = null, songGain = null, startAt = 0, songOn = false;
 function initAudio(){
   // iPhone: play as media so the ring/silent switch does not mute the game
   try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch(e){}
@@ -448,7 +353,7 @@ function initAudio(){
     try {
       ac = new (window.AudioContext || window.webkitAudioContext)();
       const comp = ac.createDynamicsCompressor(); comp.threshold.value = -10; comp.ratio.value = 3;
-      master = ac.createGain(); master.gain.value = muted ? 0 : 0.9; master.connect(comp); comp.connect(ac.destination);
+      master = ac.createGain(); master.gain.value = 0.9; master.connect(comp); comp.connect(ac.destination);
       noiseBuf = ac.createBuffer(1, ac.sampleRate, ac.sampleRate);
       const d = noiseBuf.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random()*2-1;
     } catch(e){ ac = null; return; }
@@ -458,7 +363,7 @@ function initAudio(){
 }
 let rawTrack = null;
 function loadSong(){
-  const done = (ok, why) => { $("play").disabled = false; $("play").textContent = ok ? "Играть" : "Играть без звука"; $("openTap").disabled = !ok;
+  const done = (ok, why) => { $("play").disabled = false; $("play").textContent = ok ? "Играть" : "Играть без звука";
     if (!ok){ setNotesExtra("Трек не загрузился, игра пойдёт без звука."); const h = document.querySelector(".hint"); if (h){ h.classList.remove("kbd"); h.textContent = "ЗВУК НЕ ЗАПУСТИЛСЯ (" + why + ") — ПЕРЕЗАГРУЗИ СТРАНИЦУ"; } } };
   try { const bin = atob(document.getElementById("trackData").textContent.trim()); rawTrack = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) rawTrack[i] = bin.charCodeAt(i); }
   catch(e){ return done(false, "данные"); }
@@ -479,7 +384,7 @@ function startSong(at, off0){
   stopSong(true);
   if (!ac) return;
   off0 = off0 || 0;
-  if (!songBuf){ ensureSong().then(ok => { if (ok && (state === "play" || tapRunning || edPlaying)) { const t = ac.currentTime, off = Math.max(0, t - at) + off0; playFrom(t, off); } }); startAt = at - off0; return; }
+  if (!songBuf){ ensureSong().then(ok => { if (ok && state === "play") { const t = ac.currentTime, off = Math.max(0, t - at) + off0; playFrom(t, off); } }); startAt = at - off0; return; }
   playFrom(at, off0);
 }
 function playFrom(at, offset){
@@ -503,7 +408,7 @@ function sfxDash(){ if (!ac) return; const t = ac.currentTime, o = ac.createOsci
 // ---------- game state ----------
 let state = "menu", p, trail, ghosts, parts, curSec = 0, pct = 0, shake = 0, flash = 0, glitch = 0, endAt = 0, msg = null, perfOffset = 0, holding = false, pointers = 0, wakeLock = null;
 let camX = W/2, heroSpin = 0, kickNow = 0, wig = 0, smear = 0, flashA = 0, rotCut = 0, zoomCut = 1, zoomKick = 0, cutIdx = -1, lastStepA = -99;
-let morphT = -9, swayS = 0, hellS = 0, hueS = 255, lastWallP = 1, godMode = false, runGod = false;
+let morphT = -9, swayS = 0, hellS = 0, hueS = 255, lastWallP = 1;
 // every sharp hit of the track: a hard flash, a smear, sparks and a little wiggle
 function sparkBurst(n){ for (let i = 0; i < n; i++){ const a = Math.random() * Math.PI * 2, v = 120 + Math.random() * 320;
   parts.push({x: p.x, y: p.y, vx: Math.cos(a) * v, vy: Math.sin(a) * v, life: .25 + Math.random() * .25, max: .5, c: Math.random() < .35 ? "255,60,50" : "255,236,210", s: 1 + Math.random() * 1.5, spark: true, hot: true}); } }
@@ -531,37 +436,17 @@ function clock(){
   if (ac && songOn){ const at = ac.currentTime - startAt, pt = nowT(); const d = at - pt; perfOffset += Math.abs(d) > 0.05 ? d : d * 0.05; }
   return nowT();
 }
-let runFrom = 0, fromEditor = false;
-function startRun(fromB){
+function startRun(){
   initAudio(); if (ac && ac.state === "suspended") ac.resume();
-  edStopListen();
   resetRun();
-  runFrom = fromB > 0 ? fromB : 0;
-  if (!runFrom){
-    attempts++; store.set("ss_" + LEVEL + "_att", String(attempts));
-    // the run starts 2 beats before the song's first beat so there is time to grab the ball
-    const lead = Math.max(0.1, 2 * SPB - PH);
-    if (ac) startSong(ac.currentTime + lead);
-    perfOffset = -(performance.now()/1000) - lead;
-  } else {
-    // practice from any beat: a beat and a half of run-up inside the song, never counted for records
-    const b0 = runFrom - 1.5, T0 = PH + b0 * SPB, lead = 0.12;
-    if (ac) startSong(ac.currentTime + lead, Math.max(0, T0));
-    perfOffset = T0 - performance.now()/1000 - lead;
-    curSec = secAt(Math.max(0, b0)); const S = SECTIONS[curSec];
-    p.mode = S.m; p.y = yb(b0); beatNow = b0;
-    if (S.m === "wave"){ const c = corrAt(b0); p.x = c ? c.c : W/2; }
-    else {
-      let side = S.entry || 1, lw = side;
-      for (const d of DOORS){ if (d.b > b0) break; side = d.to; if (side !== 0) lw = side; }
-      p.side = side; lastWallP = lw; p.x = attachX(side); p.dashing = false;
-    }
-  }
+  attempts++; store.set("ss_" + LEVEL + "_att", String(attempts));
+  // the run starts 2 beats before the song's first beat so there is time to grab the ball
+  const lead = Math.max(0.1, 2 * SPB - PH);
+  if (ac) startSong(ac.currentTime + lead);
+  perfOffset = -(performance.now()/1000) - lead;
   state = "play"; holding = pointers > 0;
-  $("menu").hidden = true; $("over").hidden = true; $("tapper").hidden = true; $("editor").hidden = true; $("hud").hidden = false;
+  $("menu").hidden = true; $("over").hidden = true; $("hud").hidden = false;
   $("bestHud").textContent = best + "%"; $("attHud").textContent = attempts;
-  runGod = godMode || runFrom > 0;
-  $("toEd").hidden = !fromEditor;
   try { navigator.wakeLock && navigator.wakeLock.request("screen").then(l => wakeLock = l).catch(() => {}); } catch(e){}
 }
 function showMsg(text, sub){ msg = {text, sub: sub || "", t: performance.now()/1000}; }
@@ -582,7 +467,7 @@ function endRun(win){
       parts.push({x: p.x, y: p.y, vx: Math.cos(a)*v, vy: Math.sin(a)*v, life: 1 + Math.random(), max: 2, c: ["235,238,245","255,200,67","255,40,50","239,230,214"][i%4], s: 1 + Math.random()*2, spark: true}); }
     if (ac && songGain) songGain.gain.setTargetAtTime(0, ac.currentTime + 0.8, 0.4);
     hap("success");
-    if (!clearAtt && !runGod){ clearAtt = attempts; store.set("ss_" + LEVEL + "_clear", String(clearAtt)); }
+    if (!clearAtt){ clearAtt = attempts; store.set("ss_" + LEVEL + "_clear", String(clearAtt)); }
   } else {
     state = "dying"; endAt = performance.now()/1000; shake = reduced ? 3 : 18; flash = 1;
     for (let i = 0; i < 60; i++){ const a = Math.random()*Math.PI*2, v = 60 + Math.random()*380;
@@ -591,7 +476,7 @@ function endRun(win){
     stopSong(false); sfxCrash(); hap("error");
     try { navigator.vibrate && navigator.vibrate(60); } catch(e){}
   }
-  const isBest = !runGod && pct > best;
+  const isBest = pct > best;
   if (isBest){ best = pct; store.set("ss_" + LEVEL + "_best", String(best)); }
   $("overKicker").textContent = win ? "Уровень пройден" : "Разбился на";
   $("overKicker").className = "kicker" + (win ? " win" : "");
@@ -634,67 +519,26 @@ cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", up);
 let keyHeld = false;
 const ready = () => !$("play").disabled;
 addEventListener("keydown", e => {
-  if (state === "edit"){ if (e.code === "Space" && !(e.target && /TEXTAREA|BUTTON/.test(e.target.tagName))){ e.preventDefault(); edAddNow(); } return; }
   if (e.code !== "Space" && e.code !== "ArrowUp" && e.code !== "Enter") return;
   if (e.target && e.target.tagName === "BUTTON" && e.code !== "Space") return;
   e.preventDefault();
   if (keyHeld) return; keyHeld = true;
-  if (state === "tap"){ tapHit(); return; }
   if ((state === "menu" || state === "dead" || state === "result") && ready()) { startRun(); holding = true; pointers = 1; return; }
   down();
 });
 addEventListener("keyup", e => { if ((e.code === "Space" || e.code === "ArrowUp" || e.code === "Enter") && keyHeld){ keyHeld = false; up(); } });
 addEventListener("blur", () => { pointers = 0; holding = false; keyHeld = false; });
 $("play").addEventListener("click", () => startRun());
-$("retry").addEventListener("click", () => startRun(runFrom));
+$("retry").addEventListener("click", () => startRun());
 function goMenu(){
   if (state === "menu") return;
-  if (fromEditor){ stopSong(false); closeEditor(); return; }
   stopSong(false); state = "menu"; resetRun(); $("over").hidden = true; $("hud").hidden = true; $("menu").hidden = false; updateMenuPB(); renderBoards();
   if (sbMode) sbLoad();
   try { wakeLock && wakeLock.release(); } catch(e){} wakeLock = null;
 }
 $("toMenu").addEventListener("click", goMenu);
-$("god").addEventListener("click", () => { godMode = !godMode; if (godMode) runGod = true; $("god").textContent = godMode ? "бессмертие вкл" : "бессмертие выкл"; $("god").setAttribute("aria-pressed", String(godMode)); });
 function updateMenuPB(){ $("pbMenu").textContent = clearAtt ? "ПРОЙДЕН ✓" : (best ? "ЛУЧШЕЕ " + best + "%" : ""); }
 updateMenuPB();
-
-// ---------- beatmap tapper ----------
-let taps = [], tapRunning = false;
-function tapHit(){
-  if (!tapRunning || !ac) return;
-  const t = ac.currentTime - startAt - (ac.outputLatency || 0) - (ac.baseLatency || 0);
-  if (t < 0) return;
-  taps.push(t); $("tapCount").textContent = taps.length;
-  const z = $("tapZone"); z.style.transform = "scale(.97)"; setTimeout(() => z.style.transform = "", 60);
-}
-function tapFinish(){
-  if (!tapRunning) return;
-  tapRunning = false; stopSong(false);
-  const beats = taps.map(t => Math.round(((t - PH) / SPB) * 4) / 4);
-  const out = "SKULL SHAFT · разметка · " + taps.length + " тапов · BPM " + BPM + " · offset " + PH + "\n" +
-    "доли: " + beats.map(b => b.toFixed(2)).join(" ") + "\n" +
-    "секунды: " + taps.map(t => t.toFixed(3)).join(" ");
-  $("tapOut").value = out; $("tapOut").hidden = false; $("tapCopy").hidden = false;
-  $("tapStart").textContent = "Заново"; $("tapTime").textContent = "готово — скопируй и пришли";
-}
-$("openTap").addEventListener("click", () => { state = "tap"; $("menu").hidden = true; $("tapper").hidden = false; });
-$("tapStart").addEventListener("click", () => {
-  if (tapRunning){ tapFinish(); return; }
-  initAudio(); if (ac && ac.state === "suspended") ac.resume();
-  taps = []; $("tapCount").textContent = "0"; $("tapOut").hidden = true; $("tapCopy").hidden = true; $("tapCopy").textContent = "Скопировать";
-  if (!ac || !songBuf) { $("tapTime").textContent = "трек не загрузился"; return; }
-  startSong(ac.currentTime + 0.15); tapRunning = true; $("tapStart").textContent = "Готово"; $("tapTime").textContent = "тапай в ритм";
-});
-$("tapZone").addEventListener("pointerdown", e => { e.preventDefault(); tapHit(); });
-$("tapStop").addEventListener("click", () => { if (tapRunning){ tapRunning = false; stopSong(false); } state = "menu"; $("tapper").hidden = true; $("menu").hidden = false; });
-$("tapCopy").addEventListener("click", () => {
-  const ta = $("tapOut");
-  const fallback = () => { ta.focus(); ta.select(); $("tapCopy").textContent = "Выделено — скопируй"; };
-  try { navigator.clipboard.writeText(ta.value).then(() => $("tapCopy").textContent = "Скопировано", fallback); } catch(e){ fallback(); }
-});
-
-/*EDITOR*/
 
 // ---------- direction (per-section look and camera) ----------
 function fxAt(b){
@@ -752,12 +596,10 @@ function update(dt, rt){
     if (state === "play"){
       pct = clamp(Math.floor(beat / FINISH * 100), 0, 99);
       if (beat >= FINISH) endRun(true);
-      else if (beat > -1.5 && !godMode && hit(beat)) endRun(false);
+      else if (beat > -1.5 && hit(beat)) endRun(false);
     } else if (rt - endAt > 2.2 && $("over").hidden){ state = "result"; $("over").hidden = false; $("hud").hidden = true; renderBoards(); }
   } else if (state === "dying"){
     if (rt - endAt > 0.85){ state = "dead"; $("over").hidden = false; $("hud").hidden = true; renderBoards(); }
-  } else if (state === "tap"){
-    if (tapRunning && ac){ const t = ac.currentTime - startAt; songT = t; beatNow = (t - PH) / SPB; $("tapTime").textContent = t.toFixed(1) + " c"; if (songBuf && t > songBuf.duration - 0.2) tapFinish(); }
   } else if (state === "menu"){
     beatNow = rt / SPB;
   }
@@ -780,10 +622,9 @@ function camTo(c, mult, z, rot, shx, shy, cyw, par){
 
 function render(rt, dt){
   const playing = state === "play" || state === "dying" || state === "won";
-  const tapping = state === "tap" && tapRunning;
   const beat = beatNow;
   let kick, snr;
-  if ((playing && state !== "dying") || tapping){ kick = hitEnv(LOW, songT); snr = hitEnv(MID, songT); }
+  if (playing && state !== "dying"){ kick = hitEnv(LOW, songT); snr = hitEnv(MID, songT); }
   else if (state === "dying"){ kick = 0; snr = 0; }
   else { const bf = frac(rt / SPB); kick = Math.exp(-bf * 5) * 0.6; snr = (Math.floor(rt / SPB) % 4 === 2) ? Math.exp(-bf * 6) * 0.8 : 0; }
   const F = playing ? fxAt(beat) : {appr: 0, hell: 0, blur: 0, ca: 0, emb: 0.4, eye: 0.7, skullA: 1, black: 0, sway: 0};
@@ -926,7 +767,7 @@ skImg.src = "data:image/png;base64,/*SKIMG*/";
 const SK = {w: 348, h: 552, eyes: [[89, 302, 113, 77], [257, 302, 113, 77]], nose: [173, 369, 55, 48]};
 let skX = 0, skPup = 0, apprS = 0, biteT = -9;
 function drawSkullImage(F, kick, snr, rot, shx, shy, rt, dt){
-  if (!skReady || (state === "tap" && !tapRunning)) return;
+  if (!skReady) return;
   apprS += (F.appr - apprS) * (1 - Math.exp(-dt * 2.2));
   // the bite on the drop: lunges in fast, eases back
   const tb = rt - biteT;
@@ -968,7 +809,6 @@ try { SkullGL.init(document.getElementById("skullGlb").textContent.trim()); } ca
 const SKS = {x: 0, ap: 0, yaw: 0, pitch: 0.17, roll: 0, jaw: 0};
 function drawSkullLayer(F, kick, snr, rot, shx, shy, rt, dt){
   if (typeof SkullGL === "undefined" || !SkullGL.ok) return drawSkullImage(F, kick, snr, rot, shx, shy, rt, dt);
-  if (state === "tap" && !tapRunning) return;
   const live = state === "play" || state === "won";
   const hx = live ? cssW/2 + (p.x - camX) * scale : cssW/2, hy = cssH * 0.7;
   // on the walls the hero hops side to side every beat: the skull stays put and only turns its head
@@ -1429,7 +1269,6 @@ function frame(nowMs){
   const rt = nowMs / 1000; const rawDt = Math.max(0, rt - lastRT); let dt = Math.min(0.05, rawDt); lastRT = rt;
   // adaptive skull quality: keep the game at full frame rate on weaker phones
   if (rawDt > 0 && rawDt < 0.2){ ftEMA += (rawDt * 1000 - ftEMA) * 0.05; if (ftEMA > 21 && quality > 0.35) { quality = Math.max(0.35, quality - 0.02); } else if (ftEMA < 15 && quality < 1) quality = Math.min(1, quality + 0.004); }
-  if (state === "edit"){ edFrame(); return; }
   if (state === "dying" && rt - endAt < 0.09) dt = 0;
   update(dt, rt);
   if (state === "play"){ const s = String(pct); if ($("score").textContent !== s) $("score").textContent = s; }
@@ -1439,17 +1278,11 @@ requestAnimationFrame(frame);
 loadSong();
 
 // ---------- leaderboard ----------
-let db = null, user = null, uid = null, rows = [], rowsAll = [], served = {best: 0, clearAtt: 0}, canWrite = true, lbState = "loading", writeChain = Promise.resolve(), renderTok = 0, noteExtra = "", noteMain = "";
-function filterRows(){ rows = rowsAll.filter(r => r.ver === LEVEL); renderBoards(); }
-const rankOf = (b, c) => b * 100000 + (b >= 100 && c ? 99999 - Math.min(c, 99999) : 0);
+let uid = null, rows = [], served = {best: 0, clearAtt: 0}, lbState = "loading", writeChain = Promise.resolve(), noteExtra = "", noteMain = "";
 function setNotes(t){ noteMain = t; paintNotes(); }
 function setNotesExtra(t){ noteExtra = t; paintNotes(); }
 function paintNotes(){ const t = [noteExtra, noteMain].filter(Boolean).join(" "); $("note1").textContent = t; $("note2").textContent = t; }
-async function renderBoards(){
-  const tok = ++renderTok;
-  let profs = {};
-  if (user && rows.length) { try { profs = await user.profiles(rows.map(r => r.id)); } catch(e){} }
-  if (tok !== renderTok) return;
+function renderBoards(){
   for (const ol of [$("lb1"), $("lb2")]){
     ol.textContent = "";
     if (lbState !== "ok" || !rows.length){
@@ -1458,11 +1291,10 @@ async function renderBoards(){
       ol.appendChild(li); continue;
     }
     rows.slice(0, 10).forEach((r, i) => {
-      const pr = profs[r.id] || (sbMode ? {name: r.name, avatarUrl: r.photo} : {});
       const li = document.createElement("li"); if (r.id === uid) li.className = "me";
       const rk = document.createElement("span"); rk.className = "rk"; rk.textContent = i + 1;
-      const img = document.createElement("img"); img.alt = ""; if (pr.avatarUrl) img.src = pr.avatarUrl;
-      const nm = document.createElement("span"); nm.className = "nm"; nm.textContent = pr.name || "Игрок";
+      const img = document.createElement("img"); img.alt = ""; if (r.photo) img.src = r.photo;
+      const nm = document.createElement("span"); nm.className = "nm"; nm.textContent = r.name || "Игрок";
       const pt = document.createElement("span"); pt.className = "pt" + (r.best >= 100 ? " done" : "");
       pt.textContent = r.best >= 100 ? "100% ✓" : r.best + "%";
       const sm = document.createElement("small"); sm.textContent = r.best >= 100 && r.clearAtt ? "с " + r.clearAtt + "-й попытки" : r.att + " попыт.";
@@ -1483,12 +1315,12 @@ async function sbLoad(){
     const q = "select=tg_id,name,photo,best,att,clear_att&ver=eq." + encodeURIComponent(LEVEL) + "&best=gt.0&order=best.desc,clear_att.asc,at.asc&limit=100";
     const r = await fetch(SB_URL + "/rest/v1/scores?" + q, {headers: {apikey: SB_KEY}, cache: "no-store"});
     if (!r.ok) throw r.status;
-    rowsAll = (await r.json()).map(v => ({id: String(v.tg_id), ver: LEVEL, best: clamp(Math.floor(Number(v.best)) || 0, 0, 100), att: Math.floor(Number(v.att)) || 0, clearAtt: Math.floor(Number(v.clear_att)) || 0, name: String(v.name || ""), photo: String(v.photo || "")}));
+    rows = (await r.json()).map(v => ({id: String(v.tg_id), best: clamp(Math.floor(Number(v.best)) || 0, 0, 100), att: Math.floor(Number(v.att)) || 0, clearAtt: Math.floor(Number(v.clear_att)) || 0, name: String(v.name || ""), photo: String(v.photo || "")}));
     lbState = "ok";
-    const me = rowsAll.find(r => r.id === uid);
+    const me = rows.find(r => r.id === uid);
     if (me && me.best > served.best) served = {best: me.best, clearAtt: me.clearAtt};
   } catch(e){ if (lbState !== "ok") lbState = "off"; }
-  filterRows();
+  renderBoards();
 }
 // the table is the truth: on launch the phone takes the player's record from it.
 // No row (never played, or the owner deleted it in Supabase) = record 0%. If the table can't be reached, the phone keeps its own.
@@ -1515,15 +1347,7 @@ function sbSubmit(){
     .catch(() => { served = {best: 0, clearAtt: 0}; }); // not saved: try again after the next run
 }
 function submitScore(){
-  if (sbMode){ if (uid && !runGod && (best > served.best || (clearAtt && !served.clearAtt))) sbSubmit(); return; }
-  if (!db || !uid || !canWrite || runGod) return;
-  if (!(best > served.best || (clearAtt && !served.clearAtt))) return;
-  served = {best, clearAtt};
-  const body = {best, att: attempts, clearAtt: clearAtt || 0, rank: rankOf(best, clearAtt), ver: LEVEL, at: Date.now()};
-  writeChain = writeChain.then(() => db.doc(LBCOL + "/" + uid).set(body)).catch(e => {
-    if (e && e.code === "invalid_argument"){ canWrite = false; setNotes("Рекорд виден только тебе: у твоего доступа к этой странице нет права записи."); }
-    else if (e && e.code === "unavailable") setTimeout(() => { served = {best: 0, clearAtt: 0}; submitScore(); }, 600 + Math.random()*600);
-  });
+  if (sbMode && uid && (best > served.best || (clearAtt && !served.clearAtt))) sbSubmit();
 }
 (async () => {
   renderBoards();
@@ -1534,32 +1358,8 @@ function submitScore(){
     setNotes(""); await sbSyncMe(); sbLoad();
     return;
   }
-  const c = window.claude;
-  if (!c || !c.use){ lbState = "off"; setNotes(""); renderBoards(); return; }
-  try { [db, user] = await Promise.all([c.use("db"), c.use("user")]); } catch(e){}
-  if (!db){ lbState = "off"; setNotes("Войди в аккаунт, чтобы попасть в общую таблицу."); renderBoards(); return; }
-  try { uid = user ? await user.id() : null; } catch(e){ uid = null; }
-  if (!uid) setNotes("Таблицу видно, но без входа рекорд в неё не попадёт.");
-  else { try { if (await user.can("data.write") === false){ canWrite = false; setNotes("У тебя доступ только на просмотр, поэтому рекорд в таблицу не попадёт."); } } catch(e){} }
-  // the shared map: everyone plays the saved version; only the owner may change it
-  try { edCanSave = !!(user && await user.isOwner()); } catch(e){ edCanSave = false; }
-  if (edCanSave) for (const id of ["openEd", "openTap", "god"]) $(id).hidden = false;
-  await new Promise(res => {
-    let first = true;
-    db.doc("map/lvl1").onSnapshot(d => {
-      const m = d.exists ? cleanMap(d.data()) : null;
-      savedMap = m && m.taps.length ? m : null;
-      if (state === "menu" || state === "dead" || state === "result") applyLevel(savedMap || DEFMAP); else liveMapPending = savedMap || DEFMAP;
-      if (state === "edit") edUI();
-      if (first){ first = false; res(); }
-    }, () => { if (first){ first = false; res(); } });
-    setTimeout(() => { if (first){ first = false; res(); } }, 4000);
-  });
-  db.collection(LBCOL).orderBy("rank", "desc").limit(300).onSnapshot(snap => {
-    rowsAll = snap.docs.map(d => { const v = d.data() || {}; return {id: d.id, ver: String(v.ver || "lvl1v4"), best: clamp(Math.floor(Number(v.best)) || 0, 0, 100), att: Math.floor(Number(v.att)) || 0, clearAtt: Math.floor(Number(v.clearAtt)) || 0}; }).filter(r => r.best > 0);
-    lbState = "ok"; filterRows();
-  }, () => { lbState = "off"; renderBoards(); });
-  if (uid){ try { const d = await db.doc(LBCOL + "/" + uid).get(); if (d.exists){ const v = d.data(); if (String(v.ver || "lvl1v4") === LEVEL) served = {best: Number(v.best) || 0, clearAtt: Number(v.clearAtt) || 0}; } submitScore(); } catch(e){} }
+  // outside Telegram there is no shared table: the record stays on this phone
+  lbState = "off"; renderBoards();
 })();
 })();
 </script>
