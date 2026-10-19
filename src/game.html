@@ -27,7 +27,7 @@ body{background:var(--void);color:var(--bone);font-family:var(--f-body);overflow
 #cv{position:absolute;inset:0;width:100%;height:100%;display:block;}
 
 #hud{position:absolute;left:0;right:0;top:0;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
-  padding-top:calc(env(safe-area-inset-top,0px) + 14px);
+  padding-top:calc(max(env(safe-area-inset-top,0px),var(--sat,0px)) + 14px);
   padding-left:max(26px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));pointer-events:none;}
 .sc{font-family:var(--f-display);font-weight:900;font-size:clamp(30px,8.5vw,46px);line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums;text-shadow:0 0 24px rgba(255,45,85,.55);}
 .sc small{font-size:.45em;font-weight:700;color:var(--muted);margin-left:2px;}
@@ -40,7 +40,7 @@ body{background:var(--void);color:var(--bone);font-family:var(--f-body);overflow
 .panel{position:absolute;inset:0;overflow-y:auto;display:flex;justify-content:center;
   background:linear-gradient(180deg,rgba(5,3,10,0) 0%,rgba(5,3,10,.55) 40%,rgba(5,3,10,.92) 100%);
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  padding-block:calc(env(safe-area-inset-top,0px) + 28px) calc(env(safe-area-inset-bottom,0px) + 24px);}
+  padding-block:calc(max(env(safe-area-inset-top,0px),var(--sat,0px)) + 28px) calc(max(env(safe-area-inset-bottom,0px),var(--sab,0px)) + 24px);}
 .col{width:100%;max-width:430px;display:flex;flex-direction:column;gap:16px;margin-top:auto;}
 h1{font-family:var(--f-display);font-weight:900;font-size:clamp(46px,14vw,70px);line-height:.86;letter-spacing:-.05em;margin:0;text-transform:uppercase;}
 h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember));-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 0 18px rgba(255,45,85,.45));}
@@ -96,7 +96,7 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
 #tapper textarea{width:100%;min-height:120px;resize:vertical;background:rgba(0,0,0,.4);color:var(--bone);border:1px solid var(--edge);border-radius:12px;padding:10px;font:600 12px/1.5 ui-monospace,Menlo,Consolas,monospace;box-sizing:border-box;}
 #tapper p{margin:0;font-size:13px;line-height:1.55;color:#cfc6d8;}
 #editor{position:absolute;inset:0;display:flex;flex-direction:column;background:#07060b;
-  padding-top:calc(env(safe-area-inset-top,0px) + 8px);padding-bottom:calc(env(safe-area-inset-bottom,0px) + 8px);
+  padding-top:calc(max(env(safe-area-inset-top,0px),var(--sat,0px)) + 8px);padding-bottom:calc(max(env(safe-area-inset-bottom,0px),var(--sab,0px)) + 8px);
   padding-left:max(10px,env(safe-area-inset-left,0px));padding-right:max(10px,env(safe-area-inset-right,0px));gap:8px;box-sizing:border-box;}
 .edTop{display:flex;align-items:center;gap:10px;}
 .edTitle{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
@@ -309,6 +309,37 @@ const frac = v => v - Math.floor(v);
 function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
 function hash(a, b){ let h = Math.imul(a|0, 374761393) ^ Math.imul(b|0, 668265263); h = Math.imul(h ^ (h >>> 13), 1274126177); return ((h ^ (h >>> 16)) >>> 0) / 4294967296; }
 const store = { get(k){try{return localStorage.getItem(k);}catch(e){return null;}}, set(k,v){try{localStorage.setItem(k,v);}catch(e){}} };
+
+// ---------- Telegram Mini App ----------
+// inside Telegram the address carries #tgWebAppData=...; only then the SDK is loaded (claude.ai and plain browsers skip it)
+let tg = null;
+const hap = k => { try { if (!tg || !tg.HapticFeedback) return; if (k === "jump") tg.HapticFeedback.impactOccurred("light"); else tg.HapticFeedback.notificationOccurred(k); } catch(e){} };
+const tgReady = !/tgWebAppData=/.test(location.hash) ? Promise.resolve(null) : new Promise(res => {
+  const s = document.createElement("script"); s.src = "https://telegram.org/js/telegram-web-app.js?59";
+  s.onload = () => res((window.Telegram && window.Telegram.WebApp) || null); s.onerror = () => res(null);
+  document.head.appendChild(s); setTimeout(() => res(null), 8000);
+}).then(w => { if (w) tgInit(w); return w; });
+function tgInit(w){
+  tg = w;
+  const v = x => { try { return tg.isVersionAtLeast(x); } catch(e){ return false; } };
+  const tryIt = f => { try { f(); } catch(e){} };
+  tryIt(() => { tg.ready(); tg.expand(); });
+  if (v("7.7")) tryIt(() => tg.disableVerticalSwipes());
+  if (v("6.1")) tryIt(() => { tg.setHeaderColor("#05030a"); tg.setBackgroundColor("#05030a"); });
+  if (v("7.10")) tryIt(() => tg.setBottomBarColor("#05030a"));
+  if (v("8.0") && /ios|android/.test(tg.platform)) tryIt(() => tg.requestFullscreen());
+  // in fullscreen Telegram's own close/menu buttons sit on top of the page: keep the HUD and panels below them
+  const insets = () => { const a = tg.safeAreaInset || {}, c = tg.contentSafeAreaInset || {}, r = document.documentElement.style;
+    r.setProperty("--sat", ((a.top || 0) + (c.top || 0)) + "px"); r.setProperty("--sab", ((a.bottom || 0) + (c.bottom || 0)) + "px"); };
+  insets();
+  for (const ev of ["safeAreaChanged", "contentSafeAreaChanged", "fullscreenChanged", "viewportChanged"]) tryIt(() => tg.onEvent(ev, insets));
+  // Telegram's "back" button: shown everywhere except the menu, leads back to the menu
+  if (v("6.1") && tg.BackButton){
+    let shown = false;
+    tryIt(() => tg.BackButton.onClick(() => goMenu()));
+    setInterval(() => { const want = state !== "menu" && state !== "edit" && state !== "tap"; if (want !== shown){ shown = want; tryIt(() => want ? tg.BackButton.show() : tg.BackButton.hide()); } }, 150);
+  }
+}
 const val = (A, i) => (i >= 0 && i < A.length) ? A[i] / 100 : 0;
 
 // ---------- sizing ----------
@@ -548,7 +579,7 @@ function dashTarget(){
   for (const d of DOORS){ if (d.b < b - 0.4) continue; if (d.b > b + 0.6) break; if (d.from === p.side) return d.to; break; }
   return p.side === 0 ? -lastWallP : -p.side;
 }
-function press(){ if (state === "play" && p.mode === "wall"){ if (p.dashing) p.queued = true; else startDash(dashTarget()); } }
+function press(){ if (state === "play" && p.mode === "wall"){ hap("jump"); if (p.dashing) p.queued = true; else startDash(dashTarget()); } }
 function endRun(win){
   const prevBest = best;
   if (win){
@@ -556,13 +587,14 @@ function endRun(win){
     for (let i = 0; i < 120; i++){ const a = Math.random()*Math.PI*2, v = 80 + Math.random()*420;
       parts.push({x: p.x, y: p.y, vx: Math.cos(a)*v, vy: Math.sin(a)*v, life: 1 + Math.random(), max: 2, c: ["235,238,245","255,200,67","255,40,50","239,230,214"][i%4], s: 1 + Math.random()*2, spark: true}); }
     if (ac && songGain) songGain.gain.setTargetAtTime(0, ac.currentTime + 0.8, 0.4);
+    hap("success");
     if (!clearAtt && !runGod){ clearAtt = attempts; store.set("ss_" + LEVEL + "_clear", String(clearAtt)); }
   } else {
     state = "dying"; endAt = performance.now()/1000; shake = reduced ? 3 : 18; flash = 1;
     for (let i = 0; i < 60; i++){ const a = Math.random()*Math.PI*2, v = 60 + Math.random()*380;
       parts.push({x: p.x, y: p.y, vx: Math.cos(a)*v, vy: Math.sin(a)*v, life: .5 + Math.random()*.6, max: 1.1, c: i % 3 ? "230,232,240" : "255,40,50", s: 1.5 + Math.random()*3.5, shard: true, hot: !(i % 3), rot: Math.random()*6}); }
     parts.push({ring: true, x: p.x, y: p.y, life: .5, max: .5});
-    stopSong(false); sfxCrash();
+    stopSong(false); sfxCrash(); hap("error");
     try { navigator.vibrate && navigator.vibrate(60); } catch(e){}
   }
   const isBest = !runGod && pct > best;
@@ -621,7 +653,14 @@ addEventListener("keyup", e => { if ((e.code === "Space" || e.code === "ArrowUp"
 addEventListener("blur", () => { pointers = 0; holding = false; keyHeld = false; });
 $("play").addEventListener("click", () => startRun());
 $("retry").addEventListener("click", () => startRun(runFrom));
-$("toMenu").addEventListener("click", () => { if (fromEditor){ stopSong(false); closeEditor(); return; } stopSong(false); state = "menu"; resetRun(); $("over").hidden = true; $("menu").hidden = false; updateMenuPB(); renderBoards(); });
+function goMenu(){
+  if (state === "menu") return;
+  if (fromEditor){ stopSong(false); closeEditor(); return; }
+  stopSong(false); state = "menu"; resetRun(); $("over").hidden = true; $("hud").hidden = true; $("menu").hidden = false; updateMenuPB(); renderBoards();
+  if (sbMode) sbLoad();
+  try { wakeLock && wakeLock.release(); } catch(e){} wakeLock = null;
+}
+$("toMenu").addEventListener("click", goMenu);
 $("god").addEventListener("click", () => { godMode = !godMode; if (godMode) runGod = true; $("god").textContent = godMode ? "бессмертие вкл" : "бессмертие выкл"; $("god").setAttribute("aria-pressed", String(godMode)); });
 function updateMenuPB(){ $("pbMenu").textContent = clearAtt ? "ПРОЙДЕН ✓" : (best ? "ЛУЧШЕЕ " + best + "%" : ""); }
 updateMenuPB();
@@ -1425,7 +1464,7 @@ async function renderBoards(){
       ol.appendChild(li); continue;
     }
     rows.slice(0, 10).forEach((r, i) => {
-      const pr = profs[r.id] || {};
+      const pr = profs[r.id] || (sbMode ? {name: r.name, avatarUrl: r.photo} : {});
       const li = document.createElement("li"); if (r.id === uid) li.className = "me";
       const rk = document.createElement("span"); rk.className = "rk"; rk.textContent = i + 1;
       const img = document.createElement("img"); img.alt = ""; if (pr.avatarUrl) img.src = pr.avatarUrl;
@@ -1441,7 +1480,32 @@ async function renderBoards(){
   const meTxt = myIdx >= 0 ? "ты #" + (myIdx + 1) : (best ? "твой рекорд " + best + "%" : "");
   $("me1").textContent = meTxt; $("me2").textContent = meTxt;
 }
+// ---------- shared records in Telegram (Supabase) ----------
+// reading: anyone with the public key; writing: only through the submit-score function, which checks Telegram's signature
+const SB_URL = "https://hlyyzgrkeuqeexlougmd.supabase.co", SB_KEY = "sb_publishable_nlKdmRdrP6eFCqC9qBk-9g_W-b_Phj0";
+let sbMode = false;
+async function sbLoad(){
+  try {
+    const q = "select=tg_id,name,photo,best,att,clear_att&ver=eq." + encodeURIComponent(LEVEL) + "&best=gt.0&order=best.desc,clear_att.asc,at.asc&limit=100";
+    const r = await fetch(SB_URL + "/rest/v1/scores?" + q, {headers: {apikey: SB_KEY}, cache: "no-store"});
+    if (!r.ok) throw r.status;
+    rowsAll = (await r.json()).map(v => ({id: String(v.tg_id), ver: LEVEL, best: clamp(Math.floor(Number(v.best)) || 0, 0, 100), att: Math.floor(Number(v.att)) || 0, clearAtt: Math.floor(Number(v.clear_att)) || 0, name: String(v.name || ""), photo: String(v.photo || "")}));
+    lbState = "ok";
+    const me = rowsAll.find(r => r.id === uid);
+    if (me && me.best > served.best) served = {best: me.best, clearAtt: me.clearAtt};
+  } catch(e){ if (lbState !== "ok") lbState = "off"; }
+  filterRows();
+}
+function sbSubmit(){
+  served = {best, clearAtt};
+  const body = {initData: tg.initData, best, att: attempts, clearAtt: clearAtt || 0, ver: LEVEL};
+  writeChain = writeChain
+    .then(() => fetch(SB_URL + "/functions/v1/submit-score", {method: "POST", headers: {"Content-Type": "application/json", apikey: SB_KEY}, body: JSON.stringify(body)}))
+    .then(r => { if (!r.ok) throw r.status; return sbLoad(); })
+    .catch(() => { served = {best: 0, clearAtt: 0}; }); // not saved: try again after the next run
+}
 function submitScore(){
+  if (sbMode){ if (uid && !runGod && (best > served.best || (clearAtt && !served.clearAtt))) sbSubmit(); return; }
   if (!db || !uid || !canWrite || runGod) return;
   if (!(best > served.best || (clearAtt && !served.clearAtt))) return;
   served = {best, clearAtt};
@@ -1453,6 +1517,13 @@ function submitScore(){
 }
 (async () => {
   renderBoards();
+  const w = await tgReady;
+  if (w && w.initData){
+    sbMode = true;
+    const u = w.initDataUnsafe && w.initDataUnsafe.user; uid = u && u.id ? String(u.id) : null;
+    setNotes(""); await sbLoad(); submitScore(); // also sends a record set on this phone before the table existed
+    return;
+  }
   const c = window.claude;
   if (!c || !c.use){ lbState = "off"; setNotes(""); renderBoards(); return; }
   try { [db, user] = await Promise.all([c.use("db"), c.use("user")]); } catch(e){}
