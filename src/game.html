@@ -60,6 +60,7 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
 .row{display:flex;gap:10px;}
 .row .btn{flex:1;}
 .hint{margin:-6px 0 0;text-align:center;font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.14em;}
+@media (pointer:coarse){.hint.kbd{display:none;}}
 
 .board{background:var(--glass);border:1px solid var(--edge);border-radius:18px;padding:14px 14px 10px;backdrop-filter:blur(12px);}
 .board h2{margin:0 0 10px;display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.12em;text-transform:uppercase;}
@@ -126,7 +127,7 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
       <div class="sc"><span id="score">0</span><small>%</small></div>
       <div class="best">рекорд <b id="bestHud">0%</b> · попытка <b id="attHud">1</b></div>
     </div>
-    <div class="chips"><button id="god" class="chip" type="button" aria-pressed="false">бессмертие выкл</button><button id="mute" class="chip" type="button" aria-pressed="false">звук вкл</button></div>
+    <div class="chips"><button id="god" class="chip" type="button" aria-pressed="false" hidden>бессмертие выкл</button></div>
   </div>
 
   <section id="menu" class="panel">
@@ -143,8 +144,8 @@ h1 span{display:block;background:linear-gradient(90deg,var(--blood),var(--ember)
         <li class="s"><b>СТЕНЫ</b><span>Тап, чтобы перелететь на другую стену. Прыжок работает только в удар.</span></li>
       </ul>
       <button id="play" class="btn" type="button" disabled>Загружаю трек…</button>
-      <div class="row"><button id="openTap" class="btn ghost" type="button" disabled>Разметка трека</button><button id="openEd" class="btn ghost" type="button" hidden>Редактор карты</button></div>
-      <p class="hint">НА КЛАВИАТУРЕ: ПРОБЕЛ · <button id="muteMenu" class="chip" type="button" style="padding:6px 10px;vertical-align:middle">звук вкл</button></p>
+      <div class="row"><button id="openTap" class="btn ghost" type="button" disabled hidden>Разметка трека</button><button id="openEd" class="btn ghost" type="button" hidden>Редактор карты</button></div>
+      <p class="hint kbd">НА КЛАВИАТУРЕ: ПРОБЕЛ</p>
       <div class="board">
         <h2>Таблица уровня <small id="me1"></small></h2>
         <ol class="lb" id="lb1"></ol>
@@ -412,7 +413,7 @@ DEFMAP = defaultMap(); MAP = cleanMap(DEFMAP);
 buildLevel();
 
 // ---------- audio ----------
-let ac = null, master, noiseBuf, songBuf = null, src = null, songGain = null, startAt = 0, songOn = false, muted = store.get("ss_muted") === "1";
+let ac = null, master, noiseBuf, songBuf = null, src = null, songGain = null, startAt = 0, songOn = false, muted = false;
 function initAudio(){
   // iPhone: play as media so the ring/silent switch does not mute the game
   try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch(e){}
@@ -431,7 +432,7 @@ function initAudio(){
 let rawTrack = null;
 function loadSong(){
   const done = (ok, why) => { $("play").disabled = false; $("play").textContent = ok ? "Играть" : "Играть без звука"; $("openTap").disabled = !ok;
-    if (!ok){ setNotesExtra("Трек не загрузился, игра пойдёт без звука."); const h = document.querySelector(".hint"); if (h) h.textContent = "ЗВУК НЕ ЗАПУСТИЛСЯ (" + why + ") — ПЕРЕЗАГРУЗИ СТРАНИЦУ"; } };
+    if (!ok){ setNotesExtra("Трек не загрузился, игра пойдёт без звука."); const h = document.querySelector(".hint"); if (h){ h.classList.remove("kbd"); h.textContent = "ЗВУК НЕ ЗАПУСТИЛСЯ (" + why + ") — ПЕРЕЗАГРУЗИ СТРАНИЦУ"; } } };
   try { const bin = atob(document.getElementById("trackData").textContent.trim()); rawTrack = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) rawTrack[i] = bin.charCodeAt(i); }
   catch(e){ return done(false, "данные"); }
   // decode without waking any audio (iOS only lets sound start from a tap)
@@ -471,9 +472,6 @@ function sfxCrash(){ if (!ac) return; const t = ac.currentTime;
   const s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = ac.createGain(); s.buffer = noiseBuf; f.type = "lowpass"; f.frequency.value = 1800; env(g, t, 0.002, 0.8, 0.45); s.connect(f).connect(g).connect(master); s.start(t); s.stop(t + 0.5);
   const o = ac.createOscillator(), g2 = ac.createGain(); o.type = "sawtooth"; o.frequency.setValueAtTime(300, t); o.frequency.exponentialRampToValueAtTime(30, t + 0.5); env(g2, t, 0.003, 0.35, 0.5); o.connect(g2).connect(master); o.start(t); o.stop(t + 0.6); }
 function sfxDash(){ if (!ac) return; const t = ac.currentTime, o = ac.createOscillator(), g = ac.createGain(); o.type = "triangle"; o.frequency.setValueAtTime(900, t); o.frequency.exponentialRampToValueAtTime(1800, t + 0.05); env(g, t, 0.002, 0.05, 0.06); o.connect(g).connect(master); o.start(t); o.stop(t + 0.1); }
-function setMuted(v){ muted = v; store.set("ss_muted", v ? "1" : "0"); if (master && ac) master.gain.setTargetAtTime(v ? 0 : 0.9, ac.currentTime, 0.02);
-  $("mute").textContent = v ? "звук выкл" : "звук вкл"; $("mute").setAttribute("aria-pressed", String(v));
-  const mm = $("muteMenu"); if (mm){ mm.textContent = v ? "звук выкл" : "звук вкл"; mm.setAttribute("aria-pressed", String(v)); } }
 
 // ---------- game state ----------
 let state = "menu", p, trail, ghosts, parts, curSec = 0, pct = 0, shake = 0, flash = 0, glitch = 0, endAt = 0, msg = null, perfOffset = 0, holding = false, pointers = 0, wakeLock = null;
@@ -622,10 +620,7 @@ addEventListener("blur", () => { pointers = 0; holding = false; keyHeld = false;
 $("play").addEventListener("click", () => startRun());
 $("retry").addEventListener("click", () => startRun(runFrom));
 $("toMenu").addEventListener("click", () => { if (fromEditor){ stopSong(false); closeEditor(); return; } stopSong(false); state = "menu"; resetRun(); $("over").hidden = true; $("menu").hidden = false; updateMenuPB(); renderBoards(); });
-$("mute").addEventListener("click", () => { initAudio(); setMuted(!muted); });
 $("god").addEventListener("click", () => { godMode = !godMode; if (godMode) runGod = true; $("god").textContent = godMode ? "бессмертие вкл" : "бессмертие выкл"; $("god").setAttribute("aria-pressed", String(godMode)); });
-$("muteMenu").addEventListener("click", () => { initAudio(); if (ac && ac.state === "suspended") ac.resume(); setMuted(!muted); });
-setMuted(muted);
 function updateMenuPB(){ $("pbMenu").textContent = clearAtt ? "ПРОЙДЕН ✓" : (best ? "ЛУЧШЕЕ " + best + "%" : ""); }
 updateMenuPB();
 
@@ -1465,7 +1460,7 @@ function submitScore(){
   else { try { if (await user.can("data.write") === false){ canWrite = false; setNotes("У тебя доступ только на просмотр, поэтому рекорд в таблицу не попадёт."); } } catch(e){} }
   // the shared map: everyone plays the saved version; only the owner may change it
   try { edCanSave = !!(user && await user.isOwner()); } catch(e){ edCanSave = false; }
-  if (edCanSave) $("openEd").hidden = false;
+  if (edCanSave) for (const id of ["openEd", "openTap", "god"]) $(id).hidden = false;
   await new Promise(res => {
     let first = true;
     db.doc("map/lvl1").onSnapshot(d => {

@@ -4,3 +4,4 @@ test-out/
 dist/
 site/
 assets/track-original.m4a
+.claude/

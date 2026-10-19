@@ -333,5 +333,5 @@ $("edPlay").addEventListener("click", () => { const b = Math.max(0, Math.round((
 $("edSave").addEventListener("click", edSaveMap);
 $("openEd").addEventListener("click", openEditor);
 $("toEd").addEventListener("click", backToEditor);
-// the editor shows up for the artifact's owner (or with #edit in a local copy)
-if (location.hash === "#edit") $("openEd").hidden = false;
+// the editor, track tapping and god mode show up for the artifact's owner (or with #edit in the address)
+if (location.hash === "#edit") for (const id of ["openEd", "openTap", "god"]) $(id).hidden = false;
